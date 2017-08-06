@@ -1,0 +1,116 @@
+---
+title: "Using RochePlot::sankey"
+output: github_document
+---
+
+## Get data
+
+For this example, I will use line data from Flatiron.
+
+```{r getdata}
+    library(dplyr)
+    library(RochePlot)
+    library(RocheTeradata)
+
+
+    # data valid today
+    valid_date <- Sys.Date()
+
+    # connect to data
+    tdRWDSconnect(
+      datalab = FALSE,
+      pwd = readLines("~/.animalpass"), # my password
+      ldap = FALSE # not my Roche password
+    )
+
+    d_LoT <- RocheTeradata::tdRWDSquery(
+      "
+      SELECT
+      patientid
+      ,LineName
+      ,LineNumber
+      ,IsMaintenanceTherapy
+      FROM rwd_vdm_flatiron.v_cll_lineoftherapy
+      WHERE
+      VALID_START <= CAST('",paste0(valid_date," 00:00:00"),"' AS TIMESTAMP) AND
+      VALID_END >= CAST('",paste0(valid_date," 00:00:00"),"' AS TIMESTAMP)
+      ;"
+    ) %>%
+      filter(
+        # just do lines 0 to 3
+        LineNumber < 4 &
+          # and ignore maintenence
+          IsMaintenanceTherapy == "False"
+      )
+```
+
+# Using plotly
+
+By default, the plot will use plotly to make the Sankey. E.g., the code below.
+
+```{r plotly}
+  sankey(
+    dataframe = d_LoT,
+    id = "PatientID",
+    linename = "LineName",
+    linenumber = "LineNumber",
+    n_common = 3
+  )
+```
+
+# Look at the data
+
+I can also just get the function to format the data, put not make the plot.
+
+Here I save that formatted data into `d_plot`.
+
+```{r data}
+  d_plot <- sankey(
+    dataframe = d_LoT,
+    id = "PatientID",
+    linename = "LineName",
+    linenumber = "LineNumber",
+    n_common = 3,
+    return_data = TRUE
+  )
+
+ str(d_plot)
+```
+
+## nodes
+
+There are two dataframes within the list returned. The first is the nodes.
+
+```{r nodes}
+  knitr::kable(
+    d_plot$nodes %>% head(5),
+    caption = "First 5 rows of 'nodes'"
+  )
+```
+
+## edges
+
+Second is the edges.
+
+```{r edges}
+  knitr::kable(
+    d_plot$edges %>% head(5),
+    caption = "First 5 rows of 'edges'"
+  )
+```
+
+# Different sankey wrapper
+
+Using the data returned - I can also try plotting the data using a different plotting function. E.g. here I use a more basic plotting function which is a simpler mapping to Bostock's D3.js library than the default plotly mapping.
+
+```{r rival}
+  networkD3::sankeyNetwork(
+    Links = d_plot$edges,
+    Nodes = d_plot$nodes,
+    Source = "idnum_source",
+    Target = "idnum_target",
+    Value = "value",
+    NodeID = "id_char",
+    units = "people", fontSize = 12, nodeWidth = 30
+  )
+```
