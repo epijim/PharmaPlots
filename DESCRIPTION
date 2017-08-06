@@ -1,9 +1,19 @@
 Package: RochePlot
 Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Repository: GRAN
+Version: 0.0.1
+Authors@R: person("James", "Black", , "james.black.jb2@roche.com", c("aut", "cre"))
 Description: What the package does (one paragraph).
-Depends: R (>= 3.4.0)
-License: What license is it under?
+Depends: R (>= 3.0.0)
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
+Imports:
+    magrittr,
+    plotly,
+    dplyr,
+    htmlwidgets,
+    tidyr,
+    sunburstR,
+    parsetR
+RoxygenNote: 6.0.1
