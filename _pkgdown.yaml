@@ -1,0 +1,33 @@
+title: RochePlot
+url: https://github.roche.com/Rpackages/RochePlot
+template:
+  package: RocheTemplates
+  default_assets: false
+home:
+  strip_header: true
+navbar:
+  left:
+    - icon: fa-file-code-o
+      text: "Functions"
+      href: reference/index.html
+    - icon: fa-newspaper-o
+      text: "News"
+      href: news/index.html
+    - icon: fa-ambulance
+      text: "Issues"
+      href: https://github.roche.com/Rpackages/RochePlot/issues?utf8=%E2%9C%93&q=is%3Aissue%20
+    - icon: fa-bar-chart
+      text: "Vignettes"
+      menu:
+      - text: "Using RochePlot::sankey()"
+        href: "articles/pkgdown_only/sankey.html"
+    - icon: fa-github
+      text: "Codebase"
+      href: https://github.roche.com/Rpackages/RochePlot
+reference:
+  - title: "Plotting sequences"
+    desc: "Plots for flows - e.g. LoT or attrition tables."
+    contents:
+      - sankey
+      - sunburst
+      - parallelsets
