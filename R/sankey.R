@@ -9,6 +9,7 @@
 #' @param linenumber A column with the numeric line number.
 #' @param n_common The n most common treatments you want to include. Others will go into no treatment or other.
 #' @param return_data FALSE by default. If true, it will return the formatted data for you to pass to the plotting function yourself.
+#' @param postfix What do you want to go on the labels for the Sankey
 #' @keywords teradata sankey
 #' @export
 #' @importFrom magrittr "%>%"
@@ -16,6 +17,7 @@
 #' \dontrun{
 #'           ##### Get data from flatiron ##################
 #'              library(dplyr)
+#'              library(RocheTeradata)
 #'
 #'
 #'              # data valid today
@@ -28,11 +30,11 @@
 #'
 #'              # connect to data
 #'              tdRWDSconnect(
-#'                datalab = "RWDS_blackj9",
+#'                datalab = FALSE,
 #'                type = "teradataR"
 #'              )
 #'
-#'              line.of.therapy <- tdQuery(paste0(
+#'              line.of.therapy <- RocheTeradata::tdRWDSquery(paste0(
 #'                "
 #'                SELECT
 #'                patientid
@@ -54,7 +56,7 @@
 #'
 #'              ##### Use function ##################
 #'
-#'              RWDSsankey(
+#'              sankey(
 #'                dataframe = line.of.therapy,
 #'                id = "PatientID",
 #'                linename = "LineName",
@@ -64,13 +66,14 @@
 #'
 #'           }
 
-RWDSsankey <- function(
+sankey <- function(
   dataframe,
-  id,
-  linename,
-  linenumber,
-  n_common = 5, # n most common teeatments to keep per line
-  return_data = F
+  id = NULL,
+  linename = NULL,
+  linenumber = NULL,
+  n_common = 3, # n most common teeatments to keep per line
+  return_data = F,
+  postfix = " patients"
 ){
   # define so that within function calls don't create error
     n <- NULL
@@ -82,22 +85,24 @@ RWDSsankey <- function(
     id_factor <- NULL
     id_num <- NULL
 
-
-  # needed pacakges
-  if (!requireNamespace('networkD3', quietly = T)) {
-    stop('You need to install networkD3 first. This package maps the data to D3')
-  }
-
-  if (!requireNamespace('dplyr', quietly = T)) {
-    stop('One cannot live without dplyr. I refuse to go on till you install it.')
-  }
-
-  require('dplyr', quietly = T)
-
-  # messages
+  # messages ------------------------------------------------------------
   message(paste0(
     "Please manually validate the numbers - this function is unvalidated."
   ))
+
+  # check input ------------------------------------------------------------
+    # is character
+    if (!is.character(id)) stop("id must be a character value")
+    if (!is.character(linename)) stop("linename must be character value")
+    if (!is.character(linenumber)) stop("linenumber must be character value")
+    if (!is.character(postfix)) stop("postfix must be character")
+
+    # is in dataframe
+    if (!id %in% names(dataframe)) stop("id not in dataframe")
+    if (!linename %in% names(dataframe)) stop("linename not in dataframe")
+    if (!linenumber %in% names(dataframe)) stop("linenumber not in dataframe")
+
+  # start ------------------------------------------------------------
 
   # dataset to work with
   temp_data <- dataframe %>%
@@ -115,7 +120,7 @@ RWDSsankey <- function(
   minlines <- min(temp_data$linenumber, na.rm = T)
   maxlines <- max(temp_data$linenumber, na.rm = T)
 
-  # find the n_common most common treatments in line 1 to three
+  # find the n_common most common treatments in line 1 to n
   # placeholder
   temp_mostcommon <- NULL
   # fill it
@@ -155,7 +160,7 @@ RWDSsankey <- function(
           linename %in% temp_line,
           linename,
           "Other Tx",
-          missing = "No Tx"
+          missing = "No recorded"
         )
       )
     # left join onto original to find missing
@@ -163,10 +168,10 @@ RWDSsankey <- function(
       unique(temp_data["id"]),
       temp2,
       by = "id")
-    temp2$linename_derived <- if_else(
+    temp2$linename_derived <- dplyr::if_else(
       !is.na(temp2$linename),
       paste0(temp2$linename," ",i,"L"),
-      paste0("No Tx ",i,"L")
+      paste0("No recorded ",i,"L")
     )
     # new to check the old is the same
     temp2$linenumber_derived <- i
@@ -197,7 +202,7 @@ RWDSsankey <- function(
     )
 
   # remove if line dead
-  temp_data2 <- na.omit(temp_data2)
+  temp_data2 <- stats::na.omit(temp_data2)
 
   # nodes (Tx)
   nodes <- data.frame(
@@ -211,7 +216,15 @@ RWDSsankey <- function(
     # arrange, as order is used to match!
     dplyr::arrange(
       id_num
-    ) %>% as.data.frame()
+    ) %>% as.data.frame() %>%
+    # change colours
+    mutate(
+      colour = dplyr::case_when(
+        grepl("No recorded ",.$id_char) ~ "rgb(165,42,42)",
+        grepl("Other Tx ",.$id_char) ~ "rgb(138,43,226)",
+        TRUE ~ "rgb(30,144,255)"
+      )
+    )
 
   # give numeric edges
   # will be referenced against nodes, so order crucial
@@ -236,14 +249,33 @@ RWDSsankey <- function(
   }
 
   # make the plot
-  networkD3::sankeyNetwork(
-    Links = edges,
-    Nodes = nodes,
-    Source = "idnum_source",
-    Target = "idnum_target",
-    Value = "value",
-    NodeID = "id_char",
-    units = "people", fontSize = 12, nodeWidth = 30
-  )
+    plotly::plot_ly(
+      type = "sankey",
+      domain = c(
+        x =  c(0,1),
+        y =  c(0,1)
+      ),
+      orientation = "h",
+      valueformat = ".0f",
+      valuesuffix = postfix,
+
+      node = list(
+        label = nodes$id_char,
+        color = nodes$colour,
+        pad = 15,
+        thickness = 10,
+        line = list(
+          color = "black",
+          width = 0.5
+        )
+      ),
+
+      link = list(
+        source = edges$idnum_source,
+        target = edges$idnum_target,
+        value =  edges$value
+        #label =  d_sankey$source
+      )
+    ) %>% plotly::config(displayModeBar = F)
 
 }
