@@ -65,7 +65,7 @@
 #'
 #'           }
 
-RWDSparallelsets <- function(
+parallelsets <- function(
   dataframe,
   id,
   linename,

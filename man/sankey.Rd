@@ -31,57 +31,7 @@ If you find an issue, post it here and we'll try and fix it: \url{http://go.roch
 }
 
 \examples{
-\dontrun{
-          ##### Get data from flatiron ##################
-             library(dplyr)
-             library(RocheTeradata)
-
-
-             # data valid today
-             valid_date <- Sys.Date()
-
-             # If on Windows, life is no fun
-             if (Sys.info()[["sysname"]] == "Windows"){
-               Sys.setenv(JAVA_HOME="")  # for java - go to 64bit
-             }
-
-             # connect to data
-             tdRWDSconnect(
-               datalab = FALSE,
-               type = "teradataR"
-             )
-
-             line.of.therapy <- RocheTeradata::tdRWDSquery(paste0(
-               "
-               SELECT
-               patientid
-               ,LineName
-               ,LineNumber
-               ,IsMaintenanceTherapy
-               FROM rwd_vdm_flatiron.v_cll_lineoftherapy
-               WHERE
-               VALID_START <= CAST('",paste0(valid_date," 00:00:00"),"' AS TIMESTAMP) AND
-               VALID_END >= CAST('",paste0(valid_date," 00:00:00"),"' AS TIMESTAMP)
-               ;"
-             )) \%>\%
-               filter(
-                 # just do lines 0 to 3
-                 LineNumber < 4 &
-                   # and ignore maintenence
-                   IsMaintenanceTherapy == "False"
-               )
-
-             ##### Use function ##################
-
-             sankey(
-               dataframe = line.of.therapy,
-               id = "PatientID",
-               linename = "LineName",
-               linenumber = "LineNumber",
-               n_common = 3
-             )
-
-          }
+paste("See https://pages.github.roche.com/Rpackages/RocheTeradata/articles/pkgdown_only/shiny.html")
 }
 \keyword{sankey}
 \keyword{teradata}
