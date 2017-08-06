@@ -1,6 +1,6 @@
-#' Quickly get a D3 js sunburst
+#' Quickly get a D3 js parallel sets plot
 #'
-#' This function will take 4 columns of data, format the data, then feed it to sunburstR where it will be converted into a D3 plot.
+#' This function will take 4 columns of data, format the data, then feed it to parsetR where it will be converted into a D3 plot.
 #' @section Bugs:
 #' If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RocheRWDSissue}
 #' @param dataframe the dataframe holding the data
@@ -9,10 +9,10 @@
 #' @param linenumber A column with the numeric line number.
 #' @param n_common The n most common treatments you want to include. Others will go into no treatment or other.
 #' @param return_data FALSE by default. If true, it will return the formatted data for you to pass to the plotting function yourself.
-#' @param legend_width Width of the legend in pixels. This will likely need tweaking.
-#' @keywords teradata sunburst
-#' @importFrom magrittr "%>%"
+#' @param ... passdown options
+#' @keywords teradata parallel sets
 #' @export
+#' @importFrom magrittr "%>%"
 #' @examples
 #' \dontrun{
 #'           ##### Get data from flatiron ##################
@@ -33,7 +33,7 @@
 #'                type = "teradataR"
 #'              )
 #'
-#'              line.of.therapy <- tdRWDSquery(paste0(
+#'              line.of.therapy <- tdQuery(paste0(
 #'                "
 #'                SELECT
 #'                patientid
@@ -47,48 +47,45 @@
 #'                ;"
 #'              )) %>%
 #'                filter(
-#'                  # just do lines 0 to 3
-#'                  LineNumber < 4 &
+#'                  # just do lines 1 to 3
+#'                  LineNumber < 4 & LineNumber > 0 &
 #'                    # and ignore maintenence
 #'                    IsMaintenanceTherapy == "False"
 #'                )
 #'
 #'              ##### Use function ##################
 #'
-#'              sunburst(
+#'              RWDSparallelsets(
 #'                dataframe = line.of.therapy,
 #'                id = "PatientID",
 #'                linename = "LineName",
 #'                linenumber = "LineNumber",
-#'                n_common = 3,
-#'                legend_width = 300
+#'                n_common = 3
 #'              )
 #'
 #'           }
 
-sunburst <- function(
+RWDSparallelsets <- function(
   dataframe,
   id,
   linename,
   linenumber,
   n_common = 5, # n most common teeatments to keep per line
   return_data = F,
-  legend_width = 300
+  ...
 ){
-  # define so that within function calls don't create error
-  n <- NULL
-  line <- NULL
-  . <- NULL
-  linename_derived <- NULL
-  linenumber_derived <- NULL
-  nextline <- NULL
-  id_factor <- NULL
-  id_num <- NULL
+
 
   # messages
   message(paste0(
     "Please manually validate the numbers - this function is unvalidated."
   ))
+
+  # ignore use within functions
+  . <- NULL
+  n <- NULL
+  line <- NULL
+  linename_clean <- NULL
 
   # dataset to work with
   temp_data <- dataframe %>%
@@ -133,7 +130,7 @@ sunburst <- function(
   # recode lines into other if not in common list
   # make a loop so adapts to n_common
   temp_clean <- NULL
-  for(i in 1:maxlines){
+  for(i in minlines:maxlines){
     # most common for this line
     temp_list <- temp_mostcommon %>% dplyr::filter(line == i) %>% .$linename
     # make other if not in list
@@ -152,46 +149,37 @@ sunburst <- function(
   temp_clean <- temp_clean %>%
     dplyr::select(id,linenumber,linename_clean)
 
-  temp_clean <- reshape(temp_clean,
+  temp_clean <- stats::reshape(temp_clean,
                         timevar = "linenumber",
                         idvar = c("id"),
-                        direction = "wide")
+                        direction = "wide") %>%
+    dplyr::select(dplyr::starts_with("linename"))
 
-  temp_clean <- temp_clean %>%
-    # merge columns
-    tidyr::unite(lines,
-          dplyr::starts_with("linename"),
-          sep = "-",
-          remove = T) %>%
-    # remove -NA
-    dplyr::mutate(
-      sequence = gsub(
-        x = lines
-        , pattern = "(-NA*)"
-        , replacement = ""
-        , perl = T
-      ),
-      sequence = paste0(sequence,"-lines end")
-    )
+  temp_clean[is.na(temp_clean)] <- "No line recorded"
 
-  # how many in each line?
-  temp_clean <- temp_clean %>%
-    dplyr::group_by(sequence) %>%
-    dplyr::summarise(
-      freq = n()
-    ) %>% as.data.frame()
+  # get frequencies
+  temp_clean <- as.data.frame(table(temp_clean))
 
-  # make a plot or give back the data?
+  # rename columns
+  names(temp_clean) <- c(
+    paste("Line", minlines:maxlines),
+    "Freq")
+
+  # if you want data, return it instead of plotting
 
   if (return_data == T) {
     return(temp_clean)
   }
 
   # make the plot
-  sunburstR::sunburst(
+  parsetR::parset(
     temp_clean,
-    count = T,
-    legend = list(w = legend_width)
+    # dimensions are the categorical columns
+    dimensions = colnames(temp_clean)[-ncol(temp_clean)],
+    # use some JavaScript to inform parset that Freq has the value
+    value = htmlwidgets::JS("function(d){return d.Freq}"),
+    width = "100%", height = 400,
+    tension = 0.7
   )
 
 }
