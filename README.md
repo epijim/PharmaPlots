@@ -2,6 +2,9 @@
 RochePlot R Package
 ===================
 
+Introduction
+------------
+
 This package contains simple wrappers for plots we repeatedly do.
 
 Help using functions
