@@ -14,7 +14,7 @@
 #' @export
 #' @importFrom magrittr "%>%"
 #' @examples
-#' paste("See https://pages.github.roche.com/Rpackages/RocheTeradata/articles/pkgdown_only/shiny.html")
+#' paste("See https://pages.github.roche.com/Rpackages/RochePlot/articles/pkgdown_only/sankey.html")
 
 sankey <- function(
   dataframe,

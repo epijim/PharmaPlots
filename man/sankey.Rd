@@ -31,7 +31,7 @@ If you find an issue, post it here and we'll try and fix it: \url{http://go.roch
 }
 
 \examples{
-paste("See https://pages.github.roche.com/Rpackages/RocheTeradata/articles/pkgdown_only/shiny.html")
+paste("See https://pages.github.roche.com/Rpackages/RochePlot/articles/pkgdown_only/sankey.html")
 }
 \keyword{sankey}
 \keyword{teradata}
