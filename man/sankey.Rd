@@ -25,9 +25,14 @@ sankey(dataframe, id = NULL, linename = NULL, linenumber = NULL,
 \description{
 This function will take 4 columns of data, format the data, then feed it to networkD3 where it will be converted into a D3 plot.
 }
+\section{Vignette}{
+
+This function has a vignette - \url{https://pages.github.roche.com/Rpackages/RochePlot/articles/pkgdown_only/sankey.html}
+}
+
 \section{Bugs}{
 
-If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RocheRWDSissue}
+If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RochePlotissue}
 }
 
 \examples{

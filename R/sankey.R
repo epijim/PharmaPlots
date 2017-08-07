@@ -1,8 +1,10 @@
 #' Quickly get a D3 js sankey
 #'
 #' This function will take 4 columns of data, format the data, then feed it to networkD3 where it will be converted into a D3 plot.
+#' @section Vignette:
+#' This function has a vignette - \url{https://pages.github.roche.com/Rpackages/RochePlot/articles/pkgdown_only/sankey.html}
 #' @section Bugs:
-#' If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RocheRWDSissue}
+#' If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RochePlotissue}
 #' @param dataframe the dataframe holding the data
 #' @param id grouping variable that links the long data. Most likely patient id.
 #' @param linename The name of the line - or whatever goes in the bars

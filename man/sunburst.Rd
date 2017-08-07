@@ -27,7 +27,7 @@ This function will take 4 columns of data, format the data, then feed it to sunb
 }
 \section{Bugs}{
 
-If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RocheRWDSissue}
+If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RochePlotissue}
 }
 
 \examples{

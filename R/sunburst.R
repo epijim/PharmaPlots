@@ -2,7 +2,7 @@
 #'
 #' This function will take 4 columns of data, format the data, then feed it to sunburstR where it will be converted into a D3 plot.
 #' @section Bugs:
-#' If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RocheRWDSissue}
+#' If you find an issue, post it here and we'll try and fix it: \url{http://go.roche.com/RochePlotissue}
 #' @param dataframe the dataframe holding the data
 #' @param id grouping variable that links the long data. Most likely patient id.
 #' @param linename The name of the line - or whatever goes in the bars
