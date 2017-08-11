@@ -4,13 +4,17 @@ output: github_document
 
 # RochePlot R Package
 
-## Introduction
+## Introduction  <img src="man/figures/logo.png" align="right" />
 
 This package contains simple wrappers for plots we repeatedly do.
 
 ## Help using functions
 
+Documentation for this package is at https://pages.github.roche.com/Rpackages/RochePlot Please report issues on github.roche.com.
+
 Please see the *Functions* link above for an HTML version of the help functions. You can also use `?` in R to get help, as the functions have help files built in.
+
+See vignettes for example code on how to make plots using Flatiron data.
 
 ## For developers
 
