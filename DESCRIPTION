@@ -12,8 +12,9 @@ Imports:
     magrittr,
     plotly,
     dplyr,
+    tidyr
+Suggests:
     htmlwidgets,
-    tidyr,
     sunburstR,
     parsetR
 RoxygenNote: 6.0.1
