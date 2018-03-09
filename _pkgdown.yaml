@@ -31,4 +31,7 @@ reference:
       - sankey
       - sunburst
       - parallelsets
+  - title: "Loss to follow up"
+    desc: "Showing attrition from inclusion/exclusion"
+    contents:
       - attrition

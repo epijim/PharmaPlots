@@ -1,5 +1,6 @@
 
-# RochePlot R Package
+[![Build
+Status](http://rkalv758783.kau.roche.com:8080/buildStatus/icon?job=Rpackages/RochePlot/master)](http://rkalv758783.kau.roche.com:8080/job/Rpackages/job/RochePlot/job/master/)
 
 ## Introduction <img src="man/figures/logo.png" align="right" />
 
