@@ -203,7 +203,7 @@ sankey <- function(
   # make the plot
     plotly::plot_ly(
       type = "sankey",
-      domain = c(
+      domain = list(
         x =  c(0,1),
         y =  c(0,1)
       ),
