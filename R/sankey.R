@@ -156,6 +156,10 @@ sankey <- function(
   # remove if line dead
   temp_data2 <- stats::na.omit(temp_data2)
 
+  node_types = unique((unique(c(temp_data2$source, temp_data2$target)))) %>% {gsub("\\s*\\w*$", "", .)} %>% unique()
+  node_colours = brewer.pal(length(node_types),'Set1')
+
+
   # nodes (Tx)
   nodes <- data.frame(
     id_char = unique(c(temp_data2$source, temp_data2$target)),
@@ -171,10 +175,7 @@ sankey <- function(
     ) %>% as.data.frame() %>%
     # change colours
     mutate(
-      colour = dplyr::case_when(
-        grepl("No recorded ",.$id_char) ~ "rgb(165,42,42)",
-        grepl("Other Tx ",.$id_char) ~ "rgb(138,43,226)",
-        TRUE ~ "rgb(30,144,255)"
+      colour = node_colours[map_dbl(id_char, function(x) which(grepl(gsub("\\s*\\w*$", "", x), node_types)))]
       )
     )
 
