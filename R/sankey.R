@@ -157,7 +157,7 @@ sankey <- function(
   temp_data2 <- stats::na.omit(temp_data2)
 
   node_types = unique((unique(c(temp_data2$source, temp_data2$target)))) %>% {gsub("\\s*\\w*$", "", .)} %>% unique()
-  node_colours = brewer.pal(length(node_types),'Set1')
+  node_colours = RColorBrewer::brewer.pal(length(node_types),'Set1')
 
 
   # nodes (Tx)
