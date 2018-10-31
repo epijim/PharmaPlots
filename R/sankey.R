@@ -174,10 +174,9 @@ sankey <- function(
       id_num
     ) %>% as.data.frame() %>%
     # change colours
-    mutate(
+    dplyr::mutate(
       colour = node_colours[map_dbl(id_char, function(x) which(grepl(gsub("\\s*\\w*$", "", x), node_types)))]
       )
-    )
 
   # give numeric edges
   # will be referenced against nodes, so order crucial
