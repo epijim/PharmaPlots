@@ -1,3 +1,7 @@
+# RochePlot 0.2.0
+
+Kieran improved ways colours work in Sankeys.
+
 # RochePlot 0.1.0
 
 Add another plot.

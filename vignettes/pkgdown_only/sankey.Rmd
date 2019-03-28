@@ -17,13 +17,13 @@ For this example, I will use line data from Flatiron.
     valid_date <- Sys.Date()
 
     # connect to data
-    tdRWDSconnect(
+    connect_teradata(
       datalab = FALSE,
       pwd = readLines("~/.animalpass"), # my password
       ldap = FALSE # not my Roche password
     )
 
-    d_LoT <- RocheTeradata::tdRWDSquery(
+    d_LoT <- RocheTeradata::query_teradata(
       "
       SELECT
       patientid

@@ -4,8 +4,8 @@
 \alias{sunburst}
 \title{Quickly get a D3 js sunburst}
 \usage{
-sunburst(dataframe, id, linename, linenumber, n_common = 5, return_data = F,
-  legend_width = 300)
+sunburst(dataframe, id, linename, linenumber, n_common = 5,
+  return_data = F, legend_width = 300)
 }
 \arguments{
 \item{dataframe}{the dataframe holding the data}

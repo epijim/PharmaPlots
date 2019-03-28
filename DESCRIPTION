@@ -1,7 +1,7 @@
 Package: RochePlot
 Title: Plotting wrappers
 Repository: GRAN
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("James", "Black", , "james.black.jb2@roche.com", c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.0.0)
@@ -16,5 +16,6 @@ Imports:
 Suggests:
     htmlwidgets,
     sunburstR,
-    parsetR
-RoxygenNote: 6.0.1
+    parsetR,
+    purrr
+RoxygenNote: 6.1.1
