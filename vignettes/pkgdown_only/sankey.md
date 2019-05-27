@@ -31,8 +31,7 @@ For this example, I will use line data from Flatiron.
     # connect to data
     tdRWDSconnect(
       datalab = FALSE,
-      pwd = readLines("~/.animalpass"), # my password
-      ldap = FALSE # not my Roche password
+      pwd = readLines("~/.ssh/.pass")
     )
 ```
 

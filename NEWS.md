@@ -1,3 +1,7 @@
+# RochePlot 0.3.0
+
+Removed animal passwords
+
 # RochePlot 0.2.0
 
 Kieran improved ways colours work in Sankeys.
